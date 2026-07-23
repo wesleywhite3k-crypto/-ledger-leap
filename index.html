@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ledger Leap">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="stylesheet" href="./src/styles.css">
+<title>Ledger Leap v0.2 — Ledger Forest</title>
+</head>
+<body>
+<div id="app"><div id="frame">
+<canvas id="game" width="1280" height="720" aria-label="Ledger Leap game"></canvas>
+<div id="hud">
+  <div class="hudbox"><span id="heroName">SCREECH</span><span id="health"></span></div>
+  <div class="hudbox"><span class="dropIcon">◆</span><span id="drops">0</span><span>•</span><span id="checkpointText">FOREST 1-1</span></div>
+</div>
+<div id="bossWrap"><div id="bossName">SCAMMER THE HAMMER</div><div id="bossBar"><div id="bossFill"></div></div><small id="bossPhase">PHASE 1</small></div>
+<div id="controls">
+  <div class="pad" id="movePad"><button id="left" aria-label="Move left">◀</button><button id="right" aria-label="Move right">▶</button></div>
+  <div class="pad" id="actionPad"><button class="action" id="dash">DASH</button><button class="action" id="jump">JUMP</button><button class="action" id="attack">FIRE</button></div>
+  <button id="pause" aria-label="Pause">Ⅱ</button>
+</div>
+<div id="toast"></div>
+<div id="screen"><div class="card">
+  <p class="eyebrow">LEDGER LEAP STUDIOS PRESENTS</p>
+  <h1>LEDGER LEAP</h1>
+  <div class="logo-sub">LEDGER FOREST — V0.2</div>
+  <p>Restore the corrupted forest, collect XRP Drops, discover a hidden cave, and defeat Scammer the Hammer.</p>
+  <div class="characters">
+    <button class="character selected" data-character="screech"><div class="avatar">🔥</div><strong>Screech</strong><span>Fast dash • wall jump • Fire Blast</span></button>
+    <button class="character" data-character="leech"><div class="avatar">💦</div><strong>Leech</strong><span>High jump • water glide • Water Blast</span></button>
+  </div>
+  <div class="menuActions"><button id="start" class="primary">PLAY LEDGER FOREST</button><button id="resetSave" class="secondary">RESET SAVE</button></div>
+  <p class="tip">Desktop: A/D or arrows • Space jump • F attack • Shift dash • Esc pause<br>Phone: use the on-screen controls.</p>
+  <p id="saveSummary" class="saveSummary"></p>
+  <p class="legal">Original fan-made game concept. Not affiliated with Ripple or the XRP Ledger Foundation.</p>
+</div></div>
+<div id="pausePanel" class="overlay hidden"><div class="card compact"><p class="eyebrow">GAME PAUSED</p><h2>Ledger Forest</h2><button id="resume" class="primary">RESUME</button><button id="restart" class="secondary">RESTART LEVEL</button></div></div>
+</div></div>
+<script src="./src/game.js"></script>
+<script>
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js'));
+</script>
+</body>
+</html>
