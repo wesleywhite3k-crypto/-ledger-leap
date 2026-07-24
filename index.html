@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Ledger Leap">
-<title>Ledger Leap v0.3 — Ledger Forest</title>
+<title>Ledger Leap v0.3.1 — Playable Mobile Build</title>
 <style>
 :root{color-scheme:dark;font-family:Inter,ui-rounded,system-ui,-apple-system,Segoe UI,sans-serif;--panel:rgba(5,14,27,.94);--line:rgba(255,255,255,.14);--blue:#43d8ff;--green:#76e85e;--orange:#ff8a24}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -40,6 +40,26 @@ html,body{position:fixed;inset:0}
 @media (orientation:portrait) and (max-width:900px){#rotateNotice{display:grid}}
 @media (display-mode:standalone){#loadingBadge{display:none}}
 
+
+/* v0.3.1: keep the Play button visible on short landscape phone screens. */
+#screen{overflow:auto;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+#screen .card{touch-action:pan-y}
+@media (orientation:landscape) and (max-height:520px){
+  #screen{place-items:start center;padding:8px 12px}
+  #screen .card{width:min(760px,98%);max-height:none;padding:10px 16px 12px;border-radius:18px}
+  #screen .eyebrow,#screen .legal,#screen .tip,#screen> .card>p:not(.eyebrow):not(.tip):not(.legal):not(.saveSummary){display:none}
+  #screen h1{font-size:clamp(2rem,10vh,3.2rem);margin-bottom:2px}
+  #screen .logo-sub{font-size:.95rem;margin-bottom:5px}
+  #screen .characters{grid-template-columns:repeat(2,1fr);gap:8px;margin:6px 0}
+  #screen .character{padding:7px 12px;display:grid;grid-template-columns:52px 1fr;align-items:center;column-gap:8px}
+  #screen .character .avatar{grid-row:1/3;height:46px;font-size:34px}
+  #screen .character strong{font-size:1.05rem}
+  #screen .character span{display:block;font-size:.67rem;white-space:nowrap}
+  #screen .menuActions{position:sticky;bottom:0;padding-top:7px;background:linear-gradient(transparent,var(--panel) 24%)}
+  #screen .menuActions button{padding:11px 18px}
+  #hud{top:5px}.hudbox{padding:5px 8px}
+}
+
 </style>
 </head>
 <body>
@@ -56,16 +76,16 @@ html,body{position:fixed;inset:0}
   <button id="pause" aria-label="Pause">Ⅱ</button>
 </div>
 <div id="toast"></div>
-<div id="loadingBadge">LIVE BUILD • V0.3</div><div id="rotateNotice"><div class="rotate-card"><span class="phone">📱</span><h2>Rotate your phone</h2><p>Ledger Leap plays best in landscape mode.</p></div></div><div id="screen"><div class="card">
+<div id="loadingBadge">LIVE BUILD • V0.3.1</div><div id="rotateNotice"><div class="rotate-card"><span class="phone">📱</span><h2>Rotate your phone</h2><p>Ledger Leap plays best in landscape mode.</p></div></div><div id="screen"><div class="card">
   <p class="eyebrow">LEDGER LEAP STUDIOS PRESENTS</p>
   <h1>LEDGER LEAP</h1>
-  <div class="logo-sub">LEDGER FOREST — V0.3</div>
+  <div class="logo-sub">LEDGER FOREST — V0.3.1</div>
   <p>Restore the corrupted forest, collect XRP Drops, discover a hidden cave, and defeat Scammer the Hammer.</p>
   <div class="characters">
     <button class="character selected" data-character="screech"><div class="avatar">🔥</div><strong>Screech</strong><span>Fast dash • wall jump • Fire Blast</span></button>
     <button class="character" data-character="leech"><div class="avatar">💦</div><strong>Leech</strong><span>High jump • water glide • Water Blast</span></button>
   </div>
-  <div class="menuActions"><button id="start" class="primary">PLAY LEDGER FOREST</button><button id="resetSave" class="secondary">RESET SAVE</button></div>
+  <div class="menuActions"><button id="start" class="primary">TAP TO PLAY</button><button id="resetSave" class="secondary">RESET SAVE</button></div>
   <p class="tip">Desktop: A/D or arrows • Space jump • F attack • Shift dash • Esc pause<br>Phone: use the on-screen controls.</p>
   <p id="saveSummary" class="saveSummary"></p>
   <p class="legal">Original fan-made game concept. Not affiliated with Ripple or the XRP Ledger Foundation.</p>
@@ -133,7 +153,7 @@ function showEnd(){ui.screen.classList.remove('hidden');ui.screen.innerHTML=`<di
 function loop(now){if(state!=='playing')return;const dt=Math.min(.033,(now-last)/1000);last=now;update(dt);drawWorld();requestAnimationFrame(loop)}
 function pauseGame(){if(state==='playing'){state='paused';ui.pausePanel.classList.remove('hidden')}else if(state==='paused'){state='playing';ui.pausePanel.classList.add('hidden');last=performance.now();requestAnimationFrame(loop)}}
 document.querySelectorAll('.character').forEach(b=>b.onclick=()=>{document.querySelectorAll('.character').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');selected=b.dataset.character;updateUI()});
-ui.start.onclick=startGame;ui.resetSave.onclick=()=>{localStorage.removeItem(SAVE_KEY);updateSaveSummary();showToast('Save reset')};ui.pause.onclick=pauseGame;ui.resume.onclick=pauseGame;ui.restart.onclick=startGame;
+ui.start.onclick=startGame;ui.start.addEventListener('touchend',e=>{e.preventDefault();startGame()},{passive:false});ui.resetSave.onclick=()=>{localStorage.removeItem(SAVE_KEY);updateSaveSummary();showToast('Save reset')};ui.pause.onclick=pauseGame;ui.resume.onclick=pauseGame;ui.restart.onclick=startGame;
 function bindHold(id,key,tap){const el=$(id),down=e=>{e.preventDefault();if(key)keys[key]=true;if(tap)tap()},up=e=>{e.preventDefault();if(key)keys[key]=false};el.addEventListener('pointerdown',down);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);el.addEventListener('pointerleave',up)}
 bindHold('left','left');bindHold('right','right');bindHold('jump','jump',jump);bindHold('attack',null,attack);bindHold('dash',null,dash);
 addEventListener('keydown',e=>{if(['ArrowLeft','KeyA'].includes(e.code))keys.left=true;if(['ArrowRight','KeyD'].includes(e.code))keys.right=true;if(['Space','ArrowUp','KeyW'].includes(e.code)){e.preventDefault();keys.jump=true;jump()}if(['KeyF','KeyJ'].includes(e.code))attack();if(['ShiftLeft','ShiftRight','KeyK'].includes(e.code))dash();if(['Escape','KeyP'].includes(e.code))pauseGame()});
